@@ -1,5 +1,6 @@
 package com.example.login;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -48,6 +49,9 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         msgList = findViewById(R.id.msgList);
         edMessage = findViewById(R.id.edMessage);
         usernm = findViewById(R.id.usernm);
+
+        Intent intent = getIntent();
+        String clientUsername = intent.getExtras().getString("clientUsername");
 
         msgList.removeAllViews();
         clientThread = new ClientThread();
