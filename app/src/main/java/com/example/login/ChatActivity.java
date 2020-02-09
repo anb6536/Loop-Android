@@ -26,9 +26,9 @@ import java.util.Date;
 
 public class ChatActivity extends AppCompatActivity implements View.OnClickListener {
 
-    public static final int SERVERPORT = 4444;
+    public static final int SERVERPORT = 5056;
 
-    public static final String SERVER_IP = "129.21.68.252";
+    public static final String SERVER_IP = "129.21.132.199";
     private ClientThread clientThread;
     private Thread thread;
     private LinearLayout msgList;
@@ -50,9 +50,6 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         edMessage = findViewById(R.id.edMessage);
         usernm = findViewById(R.id.usernm);
 
-        Intent intent = getIntent();
-        String clientUsername = intent.getExtras().getString("clientUsername");
-
         msgList.removeAllViews();
         clientThread = new ClientThread();
         thread = new Thread(clientThread);
@@ -69,8 +66,9 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
             tv.setText(message);
             tv.setTextSize(20);
             tv.setPadding(0, 5, 0, 0);
-            return tv;
+
         }
+        return tv;
     }
 
     public void showMessage(final String message, final int color) {
@@ -107,10 +105,14 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
             try {
                 InetAddress serverAddr = InetAddress.getByName(SERVER_IP);
                 socket = new Socket(serverAddr, SERVERPORT);
+                Intent intent = getIntent();
+                String clientUsername = intent.getExtras().getString("clientUsername");
+                sendMessage("CONNECT" + clientUsername);
 
                 while (!Thread.currentThread().isInterrupted()) {
 
                     this.input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
                     String message = input.readLine();
                     if (null == message || "Disconnect".contentEquals(message)) {
                         Thread.interrupted();
@@ -147,11 +149,6 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
             }).start();
         }
 
-    }
-
-    String getTime() {
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-        return sdf.format(new Date());
     }
 
     @Override
