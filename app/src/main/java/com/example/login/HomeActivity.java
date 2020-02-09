@@ -6,15 +6,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
 
+/**
+ * @author : Sanchit Monga
+ * @author : Aahish Balimane
+ */
 public class HomeActivity extends AppCompatActivity {
 
     Button create;
     Button forward;
     String clientUsername;
-
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -31,6 +32,7 @@ public class HomeActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent( HomeActivity.this, ChatActivity.class);
                 intent.putExtra("clientUsername", clientUsername);
+                intent.putExtra("Mode", "create");
                 startActivity(intent);
             }
         });
@@ -40,6 +42,7 @@ public class HomeActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(HomeActivity.this, ChatActivity.class);
                 intent.putExtra("clientUsername", clientUsername);
+                intent.putExtra("Mode", "forward");
                 startActivity(intent);
             }
         });

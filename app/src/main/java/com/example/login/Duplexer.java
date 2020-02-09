@@ -9,11 +9,12 @@ import java.util.Scanner;
 
 import androidx.annotation.RequiresApi;
 
-
 /**
+ * @author : Sanchit Monga
+ * @author : Aahish Balimane
+ *
  * This class helps you to open the input and output streams and you can send data from server to client and vice versa
  */
-
 @RequiresApi(api = Build.VERSION_CODES.KITKAT)
 public class Duplexer implements AutoCloseable{
     private Socket socket;

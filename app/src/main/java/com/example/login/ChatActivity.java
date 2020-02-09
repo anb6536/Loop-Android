@@ -2,34 +2,23 @@ package com.example.login;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.net.InetAddress;
-import java.net.Socket;
-import java.net.UnknownHostException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-public class ChatActivity extends AppCompatActivity implements View.OnClickListener {
+/**
+ * @author : Sanchit Monga
+ * @author : Aahish Balimane
+ * @author : Mehul Sen
+ */
+public class ChatActivity extends AppCompatActivity implements View.OnClickListener, Protocols {
 
     public static final int SERVERPORT = 5056;
-
     public static final String SERVER_IP = "129.21.132.199";
     private ClientThread clientThread;
     private Thread thread;
@@ -44,19 +33,27 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
-
         setTitle("Client");
         clientTextColor = ContextCompat.getColor(this, R.color.colorAccent);
         handler = new Handler();
-        msgList = findViewById(R.id.msgList);
-        edMessage = findViewById(R.id.edMessage);
-        usernm = findViewById(R.id.usernm);
-        username = usernm.getText().toString();
+
+        msgList = findViewById(R.id.msgList); // sent messages
+        edMessage = findViewById(R.id.edMessage); // text box where you type the message
+        usernm = findViewById(R.id.usernm);  // username text box
+
+        username = usernm.getText().toString(); // taking out the username from the user
+
         msgList.removeAllViews();
-        clientThread = new ClientThread();
+
+        Intent intent = getIntent();
+        String clientUsername = intent.getExtras().getString("clientUsername");
+        String mode=intent.getExtras().getString("mode");
+
+        clientThread = new ClientThread(clientUsername,mode, handler,msgList,clientTextColor,this);
         thread = new Thread(clientThread);
         thread.start();
-        showMessage("Connected to Server.", clientTextColor);
+
+        //showMessage("Connected to Server.", clientTextColor);
     }
 
     public TextView textView(String message, int color) {
@@ -83,74 +80,18 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View view) {
+        // after clicking the send button
 
         username = usernm.getText().toString();
         if (view.getId() == R.id.send_data) {
             String clientMessage = edMessage.getText().toString().trim();
-            clientMessage = "SEND " + username + " " + "0 " + clientMessage;
             showMessage(clientMessage, Color.BLUE);
+            clientMessage = "SEND " + username + " " + "0 " + clientMessage;
             if (null != clientThread) {
                 clientThread.sendMessage(clientMessage);
             }
             edMessage.setText("");
         }
-    }
-
-    class ClientThread implements Runnable {
-
-        private Socket socket;
-        private Duplexer duplexer;
-
-        @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-        @Override
-        public void run() {
-
-            try {
-                InetAddress serverAddr = InetAddress.getByName(SERVER_IP);
-                socket = new Socket(serverAddr, SERVERPORT);
-                Intent intent = getIntent();
-                String client = intent.getExtras().getString("clientUsername");
-                System.out.println("CHAT activity "+client);
-                sendMessage("CONNECT " + client);
-
-                while (!Thread.currentThread().isInterrupted()) {
-
-                    this.duplexer=new Duplexer(socket);
-                    String message =  duplexer.read(); //input.readLine();
-                    if (null == message || "Disconnect".contentEquals(message)) {
-                        Thread.interrupted();
-                        message = "Server Disconnected.";
-                        showMessage(message, Color.RED);
-                        break;
-                    }
-                    showMessage("Server: " + message, clientTextColor);
-                }
-
-            } catch (UnknownHostException e1) {
-                e1.printStackTrace();
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
-
-        }
-
-        public void sendMessage(final String message) {
-            new Thread(new Runnable() {
-                @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-                @Override
-                public void run() {
-                    try {
-                        if (null != socket) {
-                            Duplexer duplexer1=new Duplexer(socket);
-                            duplexer1.send(message);
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }).start();
-        }
-
     }
 
     @Override
