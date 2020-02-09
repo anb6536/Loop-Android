@@ -2,6 +2,7 @@ package com.example.login;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
@@ -21,8 +23,6 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class ChatActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -50,7 +50,6 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         edMessage = findViewById(R.id.edMessage);
         usernm = findViewById(R.id.usernm);
         username = usernm.getText().toString();
-
         msgList.removeAllViews();
         clientThread = new ClientThread();
         thread = new Thread(clientThread);
@@ -67,7 +66,6 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
             tv.setText(message);
             tv.setTextSize(20);
             tv.setPadding(0, 5, 0, 0);
-
         }
         return tv;
     }
@@ -99,8 +97,10 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     class ClientThread implements Runnable {
 
         private Socket socket;
-        private BufferedReader input;
+        //private BufferedReader input;
+        private Duplexer duplexer;
 
+        @RequiresApi(api = Build.VERSION_CODES.KITKAT)
         @Override
         public void run() {
 
@@ -114,9 +114,9 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
                 while (!Thread.currentThread().isInterrupted()) {
 
-                    this.input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-
-                    String message = input.readLine();
+                    //this.input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                    this.duplexer=new Duplexer(socket);
+                    String message =  duplexer.read(); //input.readLine();
                     if (null == message || "Disconnect".contentEquals(message)) {
                         Thread.interrupted();
                         message = "Server Disconnected.";
@@ -134,16 +134,15 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
         }
 
-        void sendMessage(final String message) {
+        public void sendMessage(final String message) {
             new Thread(new Runnable() {
+                @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                 @Override
                 public void run() {
                     try {
                         if (null != socket) {
-                            PrintWriter out = new PrintWriter(new BufferedWriter(
-                                    new OutputStreamWriter(socket.getOutputStream())),
-                                    true);
-                            out.println(message);
+                            Duplexer duplexer1=new Duplexer(socket);
+                            duplexer1.send(message);
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
