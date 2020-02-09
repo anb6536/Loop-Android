@@ -16,35 +16,44 @@ public class HomeActivity extends AppCompatActivity {
     Button create;
     Button forward;
     String clientUsername;
-
+    static Boolean flag=false;
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
         create = findViewById(R.id.create);
         forward = findViewById(R.id.forward);
-        Intent intent = getIntent();
-        clientUsername = intent.getExtras().getString("clientUsername");
-        System.out.println(clientUsername);
         create.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent( HomeActivity.this, ChatActivity.class);
-                intent.putExtra("clientUsername", clientUsername);
-                intent.putExtra("Mode", "create");
                 startActivity(intent);
             }
         });
+        if(flag==true){
+            forward.setText("The loop was completed");
+        }
 
         forward.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                forward.setText("CREATE");
+                flag=false;
+//                while(flag){
+//                    flag=MainActivity.client.checkForRecieve();
+//                    forward.setClickable(false);
+//                }
+//                if(flag!=false){
+//                    forward.setClickable(true);
+//                }
                 Intent intent = new Intent(HomeActivity.this, ChatActivity.class);
                 intent.putExtra("clientUsername", clientUsername);
                 intent.putExtra("Mode", "forward");
                 startActivity(intent);
             }
         });
+    }
+    public static void setCompleteStatus(){
+        flag=true;
     }
 }
