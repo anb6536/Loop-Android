@@ -1,9 +1,9 @@
-package com.example.login.server;
+package com.example.login.util;
 
 /**
  * File: Protocols.java
  * Description: Defines the protocols for the client server interface.
- * Authors: Gnandeep, Snchit, Aahish
+ * Authors: Gnandeep Gotipatti, Sanchit Monga, Aahish Balimane, Mehul Sen
  */
 
 /**

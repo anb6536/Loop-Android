@@ -9,14 +9,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ChatActivity"
-            android:parentActivityName=".MainActivity">
+        <activity android:name=".Client.ChatActivity"
+            android:parentActivityName=".Client.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value=".Client.MainActivity" />
         </activity>
-        <activity android:name=".HomeActivity" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".Client.HomeActivity" />
+        <activity android:name=".Client.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

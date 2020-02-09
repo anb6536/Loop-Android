@@ -1,9 +1,14 @@
 package com.example.login.server;
 
 
+import com.example.login.util.Protocols;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * @author : Sanchit Monga
+ */
 public class Game implements Runnable, Protocols {
     public static HashMap<Integer,ClientHandler> clients;
     public static HashMap<Integer,Loop> loops;
@@ -21,24 +26,24 @@ public class Game implements Runnable, Protocols {
         clients.put(key, client);
     }
 
-    public static ClientHandler getClient(String username){
-        return clients.get(username.hashCode());
-    }
+//    public static ClientHandler getClient(String username){
+//        return clients.get(username.hashCode());
+//    }
 
     public static int getNewLoopID(String username, int i){
         return username.hashCode()+i;
     }
-    /**
-     * Adding a new loop that was created by a client in the list
-     * @param loop
-     */
-    public static void addNewLoop(int loopID, Loop loop){
-        loops.put(loopID,loop);
-    }
-
-    public static void updateLoop(int loopID){
-
-    }
+//    /**
+//     * Adding a new loop that was created by a client in the list
+//     * @param loop
+//     */
+//    public static void addNewLoop(int loopID, Loop loop){
+//        loops.put(loopID,loop);
+//    }
+//
+//    public static void updateLoop(int loopID){
+//
+//    }
 
     public static void endLoop(ArrayList<String> clients1, int index){
         // points TBD
@@ -54,7 +59,5 @@ public class Game implements Runnable, Protocols {
     }
     @Override
     public void run() {
-
     }
-
 }

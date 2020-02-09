@@ -1,9 +1,18 @@
 package com.example.login.server;
+import android.os.Build;
+
+import com.example.login.util.Duplexer;
+import com.example.login.util.Protocols;
+
 import java.io.*;
 import java.net.*;
 import java.util.HashMap;
 
-// Server class
+import androidx.annotation.RequiresApi;
+
+/**
+ * @author : Sanchit Monga
+ */
 public class server implements Protocols {
     public static HashMap<Integer,ClientHandler> clients;
 
@@ -15,6 +24,7 @@ public class server implements Protocols {
      * @param args
      * @throws IOException
      */
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public static void main(String[] args) throws IOException
     {
         clients=new HashMap<>();

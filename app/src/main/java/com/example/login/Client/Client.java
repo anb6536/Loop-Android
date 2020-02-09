@@ -1,6 +1,10 @@
-package com.example.login;
+package com.example.login.Client;
 
 import android.os.Build;
+
+import com.example.login.util.Duplexer;
+import com.example.login.util.Protocols;
+import com.example.login.R;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -10,7 +14,11 @@ import java.util.Arrays;
 
 import androidx.annotation.RequiresApi;
 
-public class Client implements Runnable, Protocols{
+/**
+ * @author : Sanchit Monga
+ * @author : Aahish Balimane
+ */
+public class Client implements Runnable, Protocols {
     public static final int SERVERPORT = 5056;
     public static final String SERVER_IP = "129.21.132.199";
     Socket socket;
@@ -44,7 +52,7 @@ public class Client implements Runnable, Protocols{
                 for(String m:mesaage){
                     msg+=m+" ";
                 }
-                this.chatActivity.showMessage(msg,R.color.colorAccent);
+                this.chatActivity.showMessage(msg, R.color.colorAccent);
                 this.chatActivity.addLoopID(Integer.parseInt(loopID));
             }
             else if(messages.get(0).equals(LOOP_COMPLETE)){

@@ -1,11 +1,18 @@
 package com.example.login.server;
 
 
+import com.example.login.util.Duplexer;
+import com.example.login.util.Protocols;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
+/**
+ * @author : Sanchit Monga
+ * @author : Gnandeep Gotipatti
+ */
 class ClientHandler extends Thread implements Protocols {
     public Duplexer duplexer;
     private ArrayList<String> contacts;

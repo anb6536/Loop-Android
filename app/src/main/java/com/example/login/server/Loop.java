@@ -2,6 +2,9 @@ package com.example.login.server;
 
 import java.util.ArrayList;
 
+/**
+ * @author : Sanchit Monga
+ */
 public class Loop {
     public static ArrayList<String> members;
     private static ChatBox chatBox;

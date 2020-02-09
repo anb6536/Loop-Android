@@ -1,4 +1,4 @@
-package com.example.login;
+package com.example.login.Client;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -9,6 +9,9 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.example.login.util.Protocols;
+import com.example.login.R;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -80,7 +83,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
             showMessage(clientMessage, Color.BLUE);
             MainActivity.client.sendMessage(clientMessage,username,loopID);
             messageBox.setText("");
-            Intent intent =new Intent(ChatActivity.this,HomeActivity.class);
+            Intent intent =new Intent(ChatActivity.this, HomeActivity.class);
             startActivity(intent);
         }
     }
