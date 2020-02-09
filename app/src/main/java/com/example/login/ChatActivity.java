@@ -51,7 +51,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         usernm = findViewById(R.id.usernm);
 
         msgList.removeAllViews();
-        clientThread = new ClientThread();
+         clientThread = new ClientThread();
         thread = new Thread(clientThread);
         thread.start();
         showMessage("Connected to Server.", clientTextColor);
