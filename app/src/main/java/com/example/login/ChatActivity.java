@@ -31,7 +31,7 @@ import java.util.Date;
 public class ChatActivity extends AppCompatActivity implements View.OnClickListener {
 
     public static final int SERVERPORT = 5056;
-    public static final String SERVER_IP = "129.21.132.199";
+    public static final String SERVER_IP = "129.21.68.252";
     private ClientThread clientThread;
     private Thread thread;
     private LinearLayout msgList;
@@ -59,8 +59,6 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         clientThread = new ClientThread();
         thread = new Thread(clientThread);
         thread.start();
-        Intent intent = getIntent();
-        intent.putExtra("clientUsername", username);
         showMessage("Connected to Server.", clientTextColor);
     }
 
@@ -129,7 +127,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                         showMessage(message, Color.RED);
                         break;
                     }
-                    //showMessage("Server: " + message, clientTextColor);
+                    showMessage("Server: " + message, clientTextColor);
                 }
 
             } catch (UnknownHostException e1) {
