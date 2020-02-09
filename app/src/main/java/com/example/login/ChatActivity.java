@@ -49,6 +49,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         msgList = findViewById(R.id.msgList);
         edMessage = findViewById(R.id.edMessage);
         usernm = findViewById(R.id.usernm);
+        username = usernm.getText().toString();
 
         msgList.removeAllViews();
         clientThread = new ClientThread();
@@ -85,6 +86,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
         if (view.getId() == R.id.send_data) {
             String clientMessage = edMessage.getText().toString().trim();
+            clientMessage = "SEND " + username + " " + "0 " + clientMessage;
             showMessage(clientMessage, Color.BLUE);
             if (null != clientThread) {
                 clientThread.sendMessage(clientMessage);
