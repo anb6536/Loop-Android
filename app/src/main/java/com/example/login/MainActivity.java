@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void login(){
         username = usrnm.getText().toString();
-        Intent intent = new Intent(MainActivity.this, ChatActivity.class);
+        Intent intent = new Intent(MainActivity.this, HomeActivity.class);
         intent.putExtra("clientUsername", username);
         startActivity(intent);
     }
