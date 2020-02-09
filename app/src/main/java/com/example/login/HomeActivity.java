@@ -14,6 +14,7 @@ public class HomeActivity extends AppCompatActivity {
     TextView view;
     EditText message;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

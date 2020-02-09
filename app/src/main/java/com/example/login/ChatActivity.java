@@ -51,7 +51,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         usernm = findViewById(R.id.usernm);
 
         msgList.removeAllViews();
-         clientThread = new ClientThread();
+        clientThread = new ClientThread();
         thread = new Thread(clientThread);
         thread.start();
         showMessage("Connected to Server.", clientTextColor);
@@ -107,7 +107,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                 socket = new Socket(serverAddr, SERVERPORT);
                 Intent intent = getIntent();
                 String clientUsername = intent.getExtras().getString("clientUsername");
-                sendMessage("CONNECT" + clientUsername);
+                sendMessage("CONNECT " + clientUsername);
 
                 while (!Thread.currentThread().isInterrupted()) {
 
