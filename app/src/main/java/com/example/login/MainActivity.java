@@ -24,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
         this.button = findViewById(R.id.login);
         this.txt = findViewById(R.id.txt);
         this.usrnm = findViewById(R.id.usrnm);
+        System.out.println(username);
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override

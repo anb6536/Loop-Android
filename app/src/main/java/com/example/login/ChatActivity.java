@@ -28,7 +28,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
     public static final int SERVERPORT = 5056;
 
-    public static final String SERVER_IP = "129.21.116.240";
+    public static final String SERVER_IP = "129.21.132.199";
     private ClientThread clientThread;
     private Thread thread;
     private LinearLayout msgList;
@@ -107,6 +107,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                 socket = new Socket(serverAddr, SERVERPORT);
                 Intent intent = getIntent();
                 String client = intent.getExtras().getString("clientUsername");
+                System.out.println(client);
                 sendMessage("CONNECT " + client);
 
                 while (!Thread.currentThread().isInterrupted()) {
