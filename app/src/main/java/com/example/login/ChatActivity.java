@@ -23,6 +23,8 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class ChatActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -82,6 +84,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View view) {
 
+        username = usernm.getText().toString();
         if (view.getId() == R.id.send_data) {
             String clientMessage = edMessage.getText().toString().trim();
             clientMessage = "SEND " + username + " " + "0 " + clientMessage;
@@ -89,7 +92,6 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
             if (null != clientThread) {
                 clientThread.sendMessage(clientMessage);
             }
-            username = usernm.getText().toString();
             edMessage.setText("");
         }
     }
@@ -97,7 +99,6 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     class ClientThread implements Runnable {
 
         private Socket socket;
-        //private BufferedReader input;
         private Duplexer duplexer;
 
         @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -114,7 +115,6 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
                 while (!Thread.currentThread().isInterrupted()) {
 
-                    //this.input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                     this.duplexer=new Duplexer(socket);
                     String message =  duplexer.read(); //input.readLine();
                     if (null == message || "Disconnect".contentEquals(message)) {
