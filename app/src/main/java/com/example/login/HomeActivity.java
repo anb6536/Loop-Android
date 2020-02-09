@@ -23,9 +23,9 @@ public class HomeActivity extends AppCompatActivity {
 
         create = findViewById(R.id.create);
         forward = findViewById(R.id.forward);
-        Intent intent = getIntent();
-        clientUsername = intent.getExtras().getString("clientUsername");
-        System.out.println(clientUsername);
+        //Intent intent = getIntent();
+        //clientUsername = intent.getExtras().getString("clientUsername");
+        //System.out.println(clientUsername);
         create.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

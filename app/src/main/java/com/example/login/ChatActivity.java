@@ -107,7 +107,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                 socket = new Socket(serverAddr, SERVERPORT);
                 Intent intent = getIntent();
                 String client = intent.getExtras().getString("clientUsername");
-                System.out.println(client);
+                System.out.println("CHAT activity "+client);
                 sendMessage("CONNECT " + client);
 
                 while (!Thread.currentThread().isInterrupted()) {

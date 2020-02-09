@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
         this.button = findViewById(R.id.login);
         this.txt = findViewById(R.id.txt);
         this.usrnm = findViewById(R.id.usrnm);
-        System.out.println(username);
+        System.out.println("mainActivity "+username);
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void login(){
         username = usrnm.getText().toString();
-        Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+        Intent intent = new Intent(MainActivity.this, ChatActivity.class);
         intent.putExtra("clientUsername", username);
         startActivity(intent);
     }
