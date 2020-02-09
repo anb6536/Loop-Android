@@ -61,15 +61,16 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public TextView textView(String message, int color) {
+        TextView tv = new TextView(this);
         if (null == message || message.trim().isEmpty()) {
             message = "<Empty Message>";
+        }else{
+            tv.setTextColor(color);
+            tv.setText(message);
+            tv.setTextSize(20);
+            tv.setPadding(0, 5, 0, 0);
+            return tv;
         }
-        TextView tv = new TextView(this);
-        tv.setTextColor(color);
-        tv.setText(message + " [" + getTime() + "]");
-        tv.setTextSize(20);
-        tv.setPadding(0, 5, 0, 0);
-        return tv;
     }
 
     public void showMessage(final String message, final int color) {
