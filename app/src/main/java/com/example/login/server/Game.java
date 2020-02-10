@@ -1,10 +1,14 @@
 package com.example.login.server;
 
 
+import android.os.Build;
+
 import com.example.login.util.Protocols;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import androidx.annotation.RequiresApi;
 
 /**
  * @author : Sanchit Monga
@@ -45,6 +49,7 @@ public class Game implements Runnable, Protocols {
 //
 //    }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public static void endLoop(ArrayList<String> clients1, int index){
         // points TBD
         if(index!=0){

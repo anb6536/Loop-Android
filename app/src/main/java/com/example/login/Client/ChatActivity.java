@@ -35,7 +35,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
-        setTitle("Client");
+        setTitle("SnapLoops");
 
         clientTextColor = ContextCompat.getColor(this, R.color.colorAccent);
         handler = new Handler();

@@ -7,7 +7,7 @@ import java.util.ArrayList;
  */
 public class Loop {
     public static ArrayList<String> members;
-    private static ChatBox chatBox;
+    public static ChatBox chatBox;
     public int id;
     private int score;
     private static String creator;

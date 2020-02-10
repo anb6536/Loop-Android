@@ -3,7 +3,6 @@ import android.os.Build;
 
 import com.example.login.util.Duplexer;
 import com.example.login.util.Protocols;
-
 import java.io.*;
 import java.net.*;
 import java.util.HashMap;
@@ -17,8 +16,8 @@ public class server implements Protocols {
     public static HashMap<Integer,ClientHandler> clients;
 
     public server(){
+        clients=new HashMap<>(); // maintaining the list of all the clients
     }
-
     /**
      *
      * @param args
@@ -27,7 +26,6 @@ public class server implements Protocols {
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public static void main(String[] args) throws IOException
     {
-        clients=new HashMap<>();
         // server is listening on port 5056
         ServerSocket ss = new ServerSocket(5056);
         // running infinite loop for getting
@@ -45,34 +43,35 @@ public class server implements Protocols {
                 System.out.println("A new client is connected : " + s);
                 Duplexer duplexer= new Duplexer(s);
                 String m=duplexer.read();
-                System.out.println(m);
+                System.out.println("Client's name is: "+m);
+
                 String[] input=m.split(" ");
                 String username="";
+
                 if(input[0].equals(CONNECT)){
                     System.out.println("user connected");
                     username=input[1];
                 }
                 else {
+                    System.out.println("UnAuthorized user connected");
+                    continue;
                     // throw an error
                 }
+
                 int key=username.hashCode();
                 ClientHandler client = new ClientHandler(duplexer,username,game);
+
+                // When a NEW Client is connected
                 if(!clients.containsKey(key)){
                     clients.put(key,client);
                 }
-                if(!game.clients.containsKey(key)) {
-                    duplexer.send(AUTHENTICATED + " " + Integer.toString(key)); // sending the authentication message so that the user is able to login into the application
-                    game.addClient(key,client); // maintains the list of clients who are online
-                }
-                else{
-                    continue;
-                }
+//                if(!game.clients.containsKey(key)) {
+//                }
+//                else{
+//                    continue;
+//                }
                 Thread t = client;
-                // Invoking the start() method
                 t.start();
-                System.out.println("Assigning new thread for this client");
-                // create a new thread object
-                // adding the client in the loop so that the new player can be updated
             }
             catch (Exception e){
                 s.close();

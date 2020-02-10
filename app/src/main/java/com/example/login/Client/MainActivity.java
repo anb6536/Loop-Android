@@ -11,9 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-
 import com.example.login.R;
-
 import java.io.IOException;
 import java.net.Socket;
 
@@ -37,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setTitle("SnapLoops");
         this.button = findViewById(R.id.login);
         this.txt = findViewById(R.id.txt);
         this.usrnm = findViewById(R.id.usrnm);

@@ -17,14 +17,16 @@ public class HomeActivity extends AppCompatActivity {
 
     Button create;
     Button forward;
-    String clientUsername;
     static Boolean flag=false;
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        setTitle("SnapLoops");
         create = findViewById(R.id.create);
         forward = findViewById(R.id.forward);
+
+        // on clicking the create button
         create.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -36,21 +38,13 @@ public class HomeActivity extends AppCompatActivity {
             forward.setText("The loop was completed");
         }
 
+        // on clicking the forward button
         forward.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 forward.setText("CREATE");
                 flag=false;
-//                while(flag){
-//                    flag=MainActivity.client.checkForRecieve();
-//                    forward.setClickable(false);
-//                }
-//                if(flag!=false){
-//                    forward.setClickable(true);
-//                }
                 Intent intent = new Intent(HomeActivity.this, ChatActivity.class);
-                intent.putExtra("clientUsername", clientUsername);
-                intent.putExtra("Mode", "forward");
                 startActivity(intent);
             }
         });

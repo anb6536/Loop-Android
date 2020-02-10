@@ -48,15 +48,17 @@ public class Client implements Runnable, Protocols {
             if(messages.get(0).equals(RECEIVE)){
                 String loopID=messages.get(1);
                 ArrayList<String> mesaage=new ArrayList<>();
-                mesaage.addAll(messages.subList(2,messages.size()));
+                mesaage.addAll(messages.subList(2,messages.size())); // extracting the message from the input
                 for(String m:mesaage){
                     msg+=m+" ";
                 }
+
                 this.chatActivity.showMessage(msg, R.color.colorAccent);
-                this.chatActivity.addLoopID(Integer.parseInt(loopID));
+                this.chatActivity.addLoopID(Integer.parseInt(loopID)); // adding the loop ID into the ChatActivity so that it can be sent to the client
+
             }
             else if(messages.get(0).equals(LOOP_COMPLETE)){
-                this.chatActivity.showMessage("The loop has been completed",R.color.colorAccent);
+                this.chatActivity.showMessage("The loop     has been completed",R.color.colorAccent);
                 HomeActivity.setCompleteStatus();
             }
             else if(messages.get(0).equals(LOOP_BROKEN)){
@@ -69,7 +71,7 @@ public class Client implements Runnable, Protocols {
     public void addChatActivity(ChatActivity chatActivity){
         this.chatActivity=chatActivity;
     }
-//    public static Boolean checkForRecieve(){
+//    public static Boolean checkForReceive(){
 //        if(flag) return false;
 //        else return true;
 //    }

@@ -17,4 +17,8 @@ public class ChatBox {
     public static void addChat(String m, String username){
         message.concat("\n"+username+" "+m);
     }
+
+    public String getMessage(){
+        return this.message;
+    }
 }
