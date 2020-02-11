@@ -11,18 +11,19 @@ public class Loop {
     public int id;
     private int score;
     private static String creator;
+    private static String name;
 
-    public Loop(int id){
+    public Loop(int id, String creator, String name){
         this.id=id;
         this.score=0;
-        this.creator="";
+        this.name=name;
+        this.creator=creator;
         this.chatBox=new ChatBox();
         members=new ArrayList<>();
     }
 
     public static void setCreator(String username){
         creator=username;
-        members.add(username);
     }
 
     public static String getCreator(){
@@ -31,6 +32,10 @@ public class Loop {
 
     public static void addMessage(String message, String username){
         chatBox.addChat(message,username);
+    }
+
+    public static void getChat(){
+        chatBox.getMessage();
     }
     public static void addMember(String username){
         members.add(username);

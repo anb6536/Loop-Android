@@ -29,9 +29,33 @@ public interface Protocols {
     public static final String AUTHENTICATED = "AUTHENTICATED";
 
     /**
+     * From: Client
+     * To: Server
+     * Format: "START"_"USR"_"LOOP_NAME"_"message"
+     * Informs the server that the client is trying to start a new loop
+     */
+    public static final String START="START";
+
+    /**
+     * From: Server
+     * To: Client
+     * Format: "LOOP_STARTED"_"LOOP_NAME"_"LOOP_ID"
+     * To tell the client that the loop was started successfully
+     */
+    public static final String LOOP_STARTED="LOOP_STARTED";
+
+    /**
+     * From: Server
+     * To: Client
+     * Format: "LOOP_FAILED"_"LOOP_NAME"
+     * To tell the client that the loop was not started
+     */
+    public static final String LOOP_FAILED="LOOP_FAILED";
+
+    /**
      * From: client
      * To: Server
-     * Format: "SEND"_"USR"_"LOOP_ID"_"MSG" (username of the user to whom this message is being sent)
+     * Format: "SEND"_"USR"_"LOOP_ID"_"LOOP_NAME"_"MSG" (username of the user to whom this message is being sent)
      * Requests the server to send the message
      */
     public static String SEND = "SEND";

@@ -20,11 +20,11 @@ class ClientHandler extends Thread implements Protocols {
     private ArrayList<String> contacts;
     private static String username;
     private static int userKey;
-    private HashMap<Integer,Loop> loops;
+    private static HashMap<Integer,Loop> loops;
     private static Game game;
     private static int numberOfLoops;  // the number of loops that the person has started in one day
     private static ArrayList<String> messages; // storing all the messages received from the client
-
+    private static int score;
 
     public ClientHandler(Duplexer duplexer,String username, Game game) {
         this.duplexer=duplexer;
@@ -39,22 +39,24 @@ class ClientHandler extends Thread implements Protocols {
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public static void SEND(){
-        int flag=0;
+        int flag=0; // to check whether or not a new loop is being created
         String receiverUsername = messages.get(1);
-        String msg = "";
+        String text = "";
         String loopID = messages.get(2); // extracting the loopID from the message
 
         String sendMessage="";
 
+        // Extracting the actual Text message that has to be sent to the user
         for (int i = 3; i < messages.size(); i++) {
-            msg = msg + " " + messages.get(i);
+            text = text + " " + messages.get(i);
         }
-        msg.trim();
+        text.trim();
 
         // Sending the message
         // updating the loop
-        int sendToKey=receiverUsername.hashCode();
+        int receiverKey=receiverUsername.hashCode();
 
+        // checking if the LoopID already exists
         for(Loop loop :game.loops.values()){
             if(loop.id==Integer.parseInt(loopID)){
                 flag=1;
@@ -62,29 +64,35 @@ class ClientHandler extends Thread implements Protocols {
         }
 
         if(flag!=1){
-
             if(numberOfLoops<3){
 
                 int newLoopID=game.getNewLoopID(username,numberOfLoops+1);
-                sendMessage = RECEIVE + " " + newLoopID + " " + msg;
-                Loop loop=new Loop(newLoopID);
+                sendMessage = RECEIVE + " " + newLoopID + " " + text;
 
-                loop.setCreator(username);
+                // Creating the new loop and initializing it
+                Loop loop=new Loop(newLoopID,username);
                 loop.addMember(receiverUsername);
-                loop.addMessage(msg,username);
-                game.loops.put(loop.id, loop);
+                loop.addMessage(text,username);
 
+                //Maintaining the list of the loops
+                game.loops.put(loop.id, loop);
+                loops.put(loop.id,loop);
+
+                // incrementing the number of loops
                 numberOfLoops++;
             }
             else{
-                // when the maximum number of loops have been reached
+                // when the maximum number of loops has been reached
                 game.clients.get(username).duplexer.send(MAX_LOOP);
             }
         }
         else{
             // end Loop case implemented
-            //sendMessage = RECEIVE + " " + loopID + " "+ msg;
-            game.loops.get(loopID).addMessage(msg, username);
+            //sendMessage = RECEIVE + " " + loopID + " "+ text;
+
+            // adding the message in the existing loop
+            game.loops.get(loopID).addMessage(text, username);
+
             sendMessage = RECEIVE + " " + loopID + " "+ game.loops.get(loopID).chatBox.getMessage();
             if (game.loops.get(loopID).userExists(receiverUsername)){
                 System.out.println("Loop complete");
@@ -96,8 +104,8 @@ class ClientHandler extends Thread implements Protocols {
             }
         }
         // sending the actual message
-        if(game.clients.get(sendToKey)!=null){
-            game.clients.get(sendToKey).duplexer.send(sendMessage);
+        if(game.clients.get(receiverKey)!=null){
+            game.clients.get(receiverKey).duplexer.send(sendMessage);
         }
         // completing the loop logic
     }

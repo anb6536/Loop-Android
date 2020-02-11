@@ -43,7 +43,6 @@ public class server implements Protocols {
                 System.out.println("A new client is connected : " + s);
                 Duplexer duplexer= new Duplexer(s);
                 String m=duplexer.read();
-                System.out.println("Client's name is: "+m);
 
                 String[] input=m.split(" ");
                 String username="";
@@ -51,6 +50,7 @@ public class server implements Protocols {
                 if(input[0].equals(CONNECT)){
                     System.out.println("user connected");
                     username=input[1];
+                    System.out.println("Client connected: "+username);
                 }
                 else {
                     System.out.println("UnAuthorized user connected");
@@ -65,11 +65,6 @@ public class server implements Protocols {
                 if(!clients.containsKey(key)){
                     clients.put(key,client);
                 }
-//                if(!game.clients.containsKey(key)) {
-//                }
-//                else{
-//                    continue;
-//                }
                 Thread t = client;
                 t.start();
             }

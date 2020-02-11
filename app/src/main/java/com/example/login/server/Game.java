@@ -2,9 +2,7 @@ package com.example.login.server;
 
 
 import android.os.Build;
-
 import com.example.login.util.Protocols;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -16,10 +14,12 @@ import androidx.annotation.RequiresApi;
 public class Game implements Runnable, Protocols {
     public static HashMap<Integer,ClientHandler> clients;
     public static HashMap<Integer,Loop> loops;
+    private static HashMap<Integer,Integer> userScores;
 
     public Game(){
         this.clients=new HashMap<>();
         this.loops=new HashMap<>();
+        this.userScores=new HashMap<>();
     }
 
     /**
