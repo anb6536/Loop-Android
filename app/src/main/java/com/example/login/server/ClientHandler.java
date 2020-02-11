@@ -20,9 +20,10 @@ class ClientHandler extends Thread implements Protocols {
     private ArrayList<String> contacts;
     private static String username;
     private static int userKey;
-    private static HashMap<Integer,Loop> loops;
+    //<LoopID, LoopName>
+    private static HashMap<Integer,String> loops;
     private static Game game;
-    private static int numberOfLoops;  // the number of loops that the person has started in one day
+    private static int numberOfLoops;  // the number of loops that the person can start for the day
     private static ArrayList<String> messages; // storing all the messages received from the client
     private static int score;
 
@@ -33,81 +34,94 @@ class ClientHandler extends Thread implements Protocols {
         this.userKey=username.hashCode();
         this.loops=new HashMap<>();
         this.game=game;
-        this.numberOfLoops=0;
+        this.numberOfLoops=10;
         this.messages=new ArrayList<>();
+    }
+
+    private static int generateLoopID(String username, String loopName){
+        return (username+loopName).hashCode();
+    }
+    private static String extractMessage(int j){
+        String text="";
+        for (int i = j; i < messages.size(); i++) {
+            text = text + " " + messages.get(i);
+        }
+        text.trim();
+        return text;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    public static void sendMessage(String message){
+        duplexer.send(message);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    public static String getMessage(){
+        return duplexer.read();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    public static void START(){
+        // when the create loop button is clicked, then send a message to the server that the user
+        // is trying to start a new loop
+
+        if(messages.size()==1){
+            // if the maximum number of loops have been reached
+            if(numberOfLoops==0){
+                sendMessage(MAX_LOOP);
+            }
+            else{
+                // sending the message to the client that they can start the loop
+                sendMessage(START);
+            }
+        }
+
+        String receiverUsername = messages.get(1);
+        String text= extractMessage(3);
+        String loopName=messages.get(2);
+
+        // if the loop with the same name exist
+        if(loops.containsValue(loopName)){
+            sendMessage(LOOP_CREATION_FAILED);
+        }
+        else{
+            int loopID=generateLoopID(username,loopName);
+            Loop loop=new Loop(loopID,username,loopName);
+            loop.addMember(receiverUsername);
+            loop.addMessage(text,username);
+            game.loops.put(loopID,loop);
+            loops.put(loopID,loopName);// maintaining the list of the loopID with the loopName
+            numberOfLoops--;
+            // sending the message to the USER that the new loop has been successfully started
+            sendMessage(LOOP_STARTED);
+            String message=RECEIVE+" "+loopID+" "+" "+loopName+" "+loop.getChat();
+            // sending the message to the RECEIVER
+            game.getClient(receiverUsername).sendMessage(message);
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public static void SEND(){
-        int flag=0; // to check whether or not a new loop is being created
         String receiverUsername = messages.get(1);
-        String text = "";
+        String text = extractMessage(3); // will extract the message from that index;
         String loopID = messages.get(2); // extracting the loopID from the message
-
-        String sendMessage="";
-
-        // Extracting the actual Text message that has to be sent to the user
-        for (int i = 3; i < messages.size(); i++) {
-            text = text + " " + messages.get(i);
-        }
-        text.trim();
-
-        // Sending the message
-        // updating the loop
         int receiverKey=receiverUsername.hashCode();
 
-        // checking if the LoopID already exists
-        for(Loop loop :game.loops.values()){
-            if(loop.id==Integer.parseInt(loopID)){
-                flag=1;
-            }
+        // getting the existing loop from the game
+        Loop loop=game.loops.get(loopID);
+        loop.addMessage(text,username);
+        String sendMessage=RECEIVE+" "+loopID+" "+loop.getName()+" "+loop.getChat();
+
+
+        // Logic for Loop Completion
+        // if the user that we are sending the message to already exists
+        if (game.loops.get(loopID).userExists(receiverUsername)){
+            game.endLoop(Integer.parseInt(loopID),receiverUsername);
         }
-
-        if(flag!=1){
-            if(numberOfLoops<3){
-
-                int newLoopID=game.getNewLoopID(username,numberOfLoops+1);
-                sendMessage = RECEIVE + " " + newLoopID + " " + text;
-
-                // Creating the new loop and initializing it
-                Loop loop=new Loop(newLoopID,username);
-                loop.addMember(receiverUsername);
-                loop.addMessage(text,username);
-
-                //Maintaining the list of the loops
-                game.loops.put(loop.id, loop);
-                loops.put(loop.id,loop);
-
-                // incrementing the number of loops
-                numberOfLoops++;
-            }
-            else{
-                // when the maximum number of loops has been reached
-                game.clients.get(username).duplexer.send(MAX_LOOP);
-            }
+        else {
+            game.loops.get(loopID).addMember(receiverUsername);
         }
-        else{
-            // end Loop case implemented
-            //sendMessage = RECEIVE + " " + loopID + " "+ text;
-
-            // adding the message in the existing loop
-            game.loops.get(loopID).addMessage(text, username);
-
-            sendMessage = RECEIVE + " " + loopID + " "+ game.loops.get(loopID).chatBox.getMessage();
-            if (game.loops.get(loopID).userExists(receiverUsername)){
-                System.out.println("Loop complete");
-                int index = game.loops.get(loopID).members.indexOf(receiverUsername);
-                game.endLoop(game.loops.get(loopID).members, index);
-            }
-            else {
-                game.loops.get(loopID).addMember(receiverUsername);
-            }
-        }
-        // sending the actual message
-        if(game.clients.get(receiverKey)!=null){
-            game.clients.get(receiverKey).duplexer.send(sendMessage);
-        }
-        // completing the loop logic
+        game.clients.get(receiverKey).sendMessage(sendMessage);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -123,12 +137,12 @@ class ClientHandler extends Thread implements Protocols {
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public Boolean checkUserOnlineAlready(){
         if(!game.clients.containsKey(this.userKey)){
-            duplexer.send(AUTHENTICATED + " " + Integer.toString(this.userKey)); // sending the authentication message so that the user is able to login into the application
+            sendMessage(AUTHENTICATED + " " + Integer.toString(this.userKey)); // sending the authentication message so that the user is able to login into the application
             game.addClient(this.userKey,this);
             return true;
         }
         // if the login failed
-        duplexer.send(LOGIN_FAILED);
+        sendMessage(LOGIN_FAILED);
         return false;
     }
 
@@ -150,13 +164,15 @@ class ClientHandler extends Thread implements Protocols {
                 continue;
 
             // reading the message from the Client
-            String message=this.duplexer.read();
+            String message=getMessage();
             this.messages=new ArrayList<>();
             messages.addAll(Arrays.asList(message.split(" ")));
 
             switch (messages.get(0)) {
                 case SEND:
                     SEND();
+                case START:
+                    START();
             }
         }
     }

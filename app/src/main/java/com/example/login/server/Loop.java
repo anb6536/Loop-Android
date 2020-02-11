@@ -7,8 +7,8 @@ import java.util.ArrayList;
  */
 public class Loop {
     public static ArrayList<String> members;
-    public static ChatBox chatBox;
-    public int id;
+    private static ChatBox chatBox;
+    private int id;
     private int score;
     private static String creator;
     private static String name;
@@ -26,6 +26,10 @@ public class Loop {
         creator=username;
     }
 
+    public static String getName(){
+        return name;
+    }
+
     public static String getCreator(){
         return creator;
     }
@@ -34,8 +38,8 @@ public class Loop {
         chatBox.addChat(message,username);
     }
 
-    public static void getChat(){
-        chatBox.getMessage();
+    public static String getChat(){
+        return chatBox.getMessage();
     }
     public static void addMember(String username){
         members.add(username);

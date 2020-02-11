@@ -50,7 +50,7 @@ public interface Protocols {
      * Format: "LOOP_FAILED"_"LOOP_NAME"
      * To tell the client that the loop was not started
      */
-    public static final String LOOP_FAILED="LOOP_FAILED";
+    public static final String LOOP_CREATION_FAILED="LOOP_CREATION_FAILED";
 
     /**
      * From: client
@@ -82,6 +82,8 @@ public interface Protocols {
      * notifies the user that the daily loop creation limit has been reached
      */
     public static String MAX_LOOP="MAX";
+
+
     /**
      * From: server
      * To: client
