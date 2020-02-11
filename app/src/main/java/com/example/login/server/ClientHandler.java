@@ -34,13 +34,14 @@ class ClientHandler extends Thread implements Protocols {
         this.userKey=username.hashCode();
         this.loops=new HashMap<>();
         this.game=game;
-        this.numberOfLoops=10;
+        this.numberOfLoops=10; // will initialize the number of loops for the day
         this.messages=new ArrayList<>();
     }
 
     private static int generateLoopID(String username, String loopName){
         return (username+loopName).hashCode();
     }
+
     private static String extractMessage(int j){
         String text="";
         for (int i = j; i < messages.size(); i++) {
@@ -152,7 +153,7 @@ class ClientHandler extends Thread implements Protocols {
     public void run() {
         /**
          * SEND
-         * RECIEVE
+         * RECEIVE
          * LOOP_COMPLETE
          * DISCONNECT
          */
@@ -165,6 +166,7 @@ class ClientHandler extends Thread implements Protocols {
 
             // reading the message from the Client
             String message=getMessage();
+            // initializing the messages for each new input read from the Client
             this.messages=new ArrayList<>();
             messages.addAll(Arrays.asList(message.split(" ")));
 

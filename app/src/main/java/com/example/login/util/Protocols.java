@@ -3,7 +3,9 @@ package com.example.login.util;
 /**
  * File: Protocols.java
  * Description: Defines the protocols for the client server interface.
- * Authors: Gnandeep Gotipatti, Sanchit Monga, Aahish Balimane, Mehul Sen
+ * @author: Sanchit Monga
+ * @author: Gnandeep Gotipatti
+ * @author: Aahish Balimane
  */
 
 /**
@@ -12,97 +14,62 @@ package com.example.login.util;
 public interface Protocols {
 
     /**
-     * From: Client
-     * To: Server
-     * Format: "CONNECT"_"USR"
-     * Informs the server that the client wants to get connected to the server
+     * ....................CLIENT TO SERVER....................
+     *
+     * Used when a NEW USER is connected
+     *          "CONNECT"_"USR"
+     *
+     * Used when a USER starts a NEW LOOP, "USR" represents the name of the receiver of the "message"
+     *          "START"_"USR"_"LOOP_NAME"_"message"
+     *
+     * Used when a message has to be sent in the existing loop, along with the name of the receiver
+     * of the message, LOOP_ID and the LOOP_NAME.
+     *           "SEND"_"USR"_"LOOP_ID"_"LOOP_NAME"_"message"
+     *
+     * Will be sent by the client when they click the Create button on the client side and will be
+     * responded by the server, that whether or not they can start the loop
+     *           "START"
+     *
+     * ....................SERVER TO CLIENT.....................
+     *
+     * Will be sent by the server to the client if the login failed
+     *           "LOGIN"_"FAILED"
+     *
+     * Will be sent by the server to the client if the login was successful
+     *           "AUTHENTICATED"_"UID"_"USR"
+     *
+     * Will be sent by the server to the client if the loop was successfully started by the client
+     *           "LOOP_STARTED"_"LOOP_NAME"_"LOOP_ID"
+     *
+     * Will be sent by the server to the receiver along with the loopID and loopNAME and the message
+     *           "RECEIVE"_"LOOP_ID"_"LOOP_NAME"_"MSG"
+     *
+     * Will be communicated back and forth by the client and the server to maintain the list of contacts for each client
+     *           "CONTACTS"_"NAMES"....
+     *
+     * will be sent by the server to the client when the maximum number of loops that can be created in a day has been reached
+     *           "MAX"_"LOOP"
+     *
+     * Will be sent by the server to the client if the loop was successfully completed
+     *           "LOOP"_"COMPLETE"
+     *
+     * Will be sent by the server to the client if the loop was accidentally broken
+     *           "LOOP_BROKEN"_"LOOP_ID"
+     *
+     * will be sent by the server to the client if the loop creation failed(due to the same name of the loop)
+     *           "LOOP_CREATION_FAILED"_"LOOP_NAME"
      */
+
     public static final String CONNECT = "CONNECT";
-
     public static final String LOGIN_FAILED="LOGIN_FAILED";
-    /**
-     * From: server
-     * To: Client
-     * Format: "AUTH"_"UID"_"USR"
-     * Informs the client that he has been authenticated if he/she logs in again
-     */
     public static final String AUTHENTICATED = "AUTHENTICATED";
-
-    /**
-     * From: Client
-     * To: Server
-     * Format: "START"_"USR"_"LOOP_NAME"_"message"
-     * Informs the server that the client is trying to start a new loop
-     */
     public static final String START="START";
-
-    /**
-     * From: Server
-     * To: Client
-     * Format: "LOOP_STARTED"_"LOOP_NAME"_"LOOP_ID"
-     * To tell the client that the loop was started successfully
-     */
     public static final String LOOP_STARTED="LOOP_STARTED";
-
-    /**
-     * From: Server
-     * To: Client
-     * Format: "LOOP_FAILED"_"LOOP_NAME"
-     * To tell the client that the loop was not started
-     */
     public static final String LOOP_CREATION_FAILED="LOOP_CREATION_FAILED";
-
-    /**
-     * From: client
-     * To: Server
-     * Format: "SEND"_"USR"_"LOOP_ID"_"LOOP_NAME"_"MSG" (username of the user to whom this message is being sent)
-     * Requests the server to send the message
-     */
-    public static String SEND = "SEND";
-
-    /**
-     * From: Server
-     * To: Client
-     * Format:
-     * Server sends through the
-     */
-    public static String CONTACTS="CONTACTS";
-    /**
-     * From : server
-     * To : client
-     * Format: "RECIEVE"_"LOOP_ID"_"MSG" ( username of the user who is
-     * Notifies the client that he/she received a new loop
-     */
-    public static String RECEIVE = "RECEIVE";
-
-    /**
-     * from: Server
-     * to: Client
-     * Format: "MAX"
-     * notifies the user that the daily loop creation limit has been reached
-     */
-    public static String MAX_LOOP="MAX";
-
-
-    /**
-     * From: server
-     * To: client
-     * Format: "LOOPCOMP"_"VAL"
-     * Notifies the clients that the loop is complete
-     */
-    public static String LOOP_COMPLETE = "LOOP_COMPLETE";
-
-    /**
-     * from: server
-     * to: client
-     * format
-     */
-    public static String LOOP_BROKEN="LOOP_BROKEN";
-    /**
-     * From: client
-     * To: Server
-     * Format: "DISCONNECT"_"USR"
-     * Informs the server it wants to disconnect and go offline
-     */
-    public static final String DISCONNECT = "DISCONNECT";
+    public static final String SEND = "SEND";
+    public static final String CONTACTS="CONTACTS";
+    public static final String RECEIVE = "RECEIVE";
+    public static final String MAX_LOOP="MAX_LOOP";
+    public static final String LOOP_COMPLETE = "LOOP_COMPLETE";
+    public static final String LOOP_BROKEN="LOOP_BROKEN";
 }
