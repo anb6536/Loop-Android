@@ -6,6 +6,7 @@ import java.util.ArrayList;
  * @author : Sanchit Monga
  */
 public class Loop {
+
     public static ArrayList<String> members;
     private static ChatBox chatBox;
     private int id;
@@ -41,6 +42,7 @@ public class Loop {
     public static String getChat(){
         return chatBox.getMessage();
     }
+
     public static void addMember(String username){
         members.add(username);
     }

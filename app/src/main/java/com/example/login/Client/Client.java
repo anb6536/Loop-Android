@@ -20,7 +20,7 @@ import androidx.annotation.RequiresApi;
  */
 public class Client implements Runnable, Protocols {
     public static final int SERVERPORT = 5056;
-    public static final String SERVER_IP = "129.21.132.199";
+    public static final String SERVER_IP = "129.21.132.248";
     Socket socket;
     static Duplexer duplexer;
     String username;

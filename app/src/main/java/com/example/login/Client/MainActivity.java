@@ -25,11 +25,9 @@ public class MainActivity extends AppCompatActivity {
     private String username;
     public Socket socket;
     Button button;
-    EditText usrnm;
+    EditText usernameTextBox;
     TextView txt;
     public static Client client;
-    public static final int SERVERPORT = 5056;
-    public static final String SERVER_IP = "129.21.132.199";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
         setTitle("SnapLoops");
         this.button = findViewById(R.id.login);
         this.txt = findViewById(R.id.txt);
-        this.usrnm = findViewById(R.id.usrnm);
+        this.usernameTextBox = findViewById(R.id.usrnm);
         this.client=null;
         button.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -54,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
     }
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void login() throws IOException {
-        username = usrnm.getText().toString();
+        username = usernameTextBox.getText().toString();
         if (android.os.Build.VERSION.SDK_INT > 9)
         {
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()

@@ -17,7 +17,7 @@ public interface Protocols {
      * ....................CLIENT TO SERVER....................
      *
      * Used when a NEW USER is connected
-     *          "CONNECT"_"USR"
+     *          "CONNECT"_"USR"_"PHONE"
      *
      * Used when a USER starts a NEW LOOP, "USR" represents the name of the receiver of the "message"
      *          "START"_"USR"_"LOOP_NAME"_"message"
@@ -30,13 +30,16 @@ public interface Protocols {
      * responded by the server, that whether or not they can start the loop
      *           "START"
      *
+     * Will be communicated back and forth by the client and the server to maintain the list of contacts for each client
+     *           "CONTACTS"_"NAMES"....
      * ....................SERVER TO CLIENT.....................
      *
-     * Will be sent by the server to the client if the login failed
+     * Will be sent by the server to the client if the login failed or the user with the same name
+     * already exists and is online
      *           "LOGIN"_"FAILED"
      *
      * Will be sent by the server to the client if the login was successful
-     *           "AUTHENTICATED"_"UID"_"USR"
+     *           "AUTHENTICATED"_"UID"
      *
      * Will be sent by the server to the client if the loop was successfully started by the client
      *           "LOOP_STARTED"_"LOOP_NAME"_"LOOP_ID"

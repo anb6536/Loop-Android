@@ -5,7 +5,9 @@ import com.example.login.util.Duplexer;
 import com.example.login.util.Protocols;
 import java.io.*;
 import java.net.*;
+import java.security.SecureRandom;
 import java.util.HashMap;
+import java.util.Random;
 
 import androidx.annotation.RequiresApi;
 
@@ -13,7 +15,11 @@ import androidx.annotation.RequiresApi;
  * @author : Sanchit Monga
  */
 public class server implements Protocols {
-    public static HashMap<Integer,ClientHandler> clients;
+    public static HashMap<String,ClientHandler> clients;
+
+    private static final Random random= new SecureRandom();
+//    String getSaltedHash(String password)
+//    boolean checkPassword(String password, String stored)
 
     public server(){
         clients=new HashMap<>(); // maintaining the list of all the clients
@@ -45,7 +51,7 @@ public class server implements Protocols {
                 String m=duplexer.read();
 
                 String[] input=m.split(" ");
-                String username="";
+                String username;
 
                 if(input[0].equals(CONNECT)){
                     System.out.println("user connected");
@@ -58,7 +64,7 @@ public class server implements Protocols {
                     // throw an error
                 }
 
-                int key=username.hashCode();
+                String key=generatePassword(username);
                 ClientHandler client = new ClientHandler(duplexer,username,game);
 
                 // When a NEW Client is connected
@@ -73,5 +79,11 @@ public class server implements Protocols {
                 e.printStackTrace();
             }
         }
+    }
+    public static String generatePassword(String password){
+
+    }
+    public static boolean authenticate(String hashPassword){
+
     }
 }

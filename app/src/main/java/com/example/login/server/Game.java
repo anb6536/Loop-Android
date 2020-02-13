@@ -35,19 +35,6 @@ public class Game implements Runnable, Protocols {
         return clients.get(username.hashCode());
     }
 
-
-//    /**
-//     * Adding a new loop that was created by a client in the list
-//     * @param loop
-//     */
-//    public static void addNewLoop(int loopID, Loop loop){
-//        loops.put(loopID,loop);
-//    }
-//
-//    public static void updateLoop(int loopID){
-//
-//    }
-
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public static void endLoop(int loopID, String receiverUsername){
         // points TBD
@@ -58,15 +45,16 @@ public class Game implements Runnable, Protocols {
         int loopCreatorKey=members.get(0).hashCode();
 
         if(index!=0){
-            clients.get(loopCreatorKey).sendMessage(Protocols.LOOP_COMPLETE);
+            clients.get(loopCreatorKey).sendMessage(LOOP_COMPLETE);
         }
-        for(int i=index;i<clients.size();i++){
+        for(int i=index;i<members.size();i++){
            clients.get(members.get(i).hashCode()).sendMessage(LOOP_COMPLETE);
         }
         for (int j=1; j<index; j++){
             clients.get(members.get(j).hashCode()).sendMessage(LOOP_BROKEN);
         }
     }
+
     @Override
     public void run() {
     }
