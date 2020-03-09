@@ -16,13 +16,14 @@ import androidx.annotation.RequiresApi;
  */
 public class server implements Protocols {
     public static HashMap<String,ClientHandler> clients;
-
+    private static PasswordAuthentication pass;
     private static final Random random= new SecureRandom();
 //    String getSaltedHash(String password)
 //    boolean checkPassword(String password, String stored)
 
     public server(){
         clients=new HashMap<>(); // maintaining the list of all the clients
+        pass=new PasswordAuthentication();
     }
     /**
      *
@@ -64,13 +65,13 @@ public class server implements Protocols {
                     // throw an error
                 }
 
-                String key=generatePassword(username);
+                //String key=generatePassword(username);
                 ClientHandler client = new ClientHandler(duplexer,username,game);
 
                 // When a NEW Client is connected
-                if(!clients.containsKey(key)){
-                    clients.put(key,client);
-                }
+//                if(!authenticate()){
+//                    clients.put(key,client);
+//                }
                 Thread t = client;
                 t.start();
             }
@@ -80,10 +81,13 @@ public class server implements Protocols {
             }
         }
     }
-    public static String generatePassword(String password){
-
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public static String generatePassword(String password) throws Exception {
+        return pass.getSaltedHash(password);
     }
-    public static boolean authenticate(String hashPassword){
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public static boolean authenticate(String passwordEntered, String hashPassword) throws Exception {
 
+        return pass.check(passwordEntered,hashPassword);
     }
 }
