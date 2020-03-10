@@ -28,6 +28,7 @@ public interface Protocols {
      *      SIGNUP FAILED "Error message(username taken, or account with the emailID exists already, or user logged in already"
      *      SIGNUP SUCCESSFUL
      *
+     *
      *                          Getting homepage data:
      * Client to Server:
      *      GET NUMBER_OF_LOOPS_AVAILABLE
@@ -150,6 +151,9 @@ public interface Protocols {
 
     public static final String CONNECT = "CONNECT";
     public static final String SIGNUP="SIGNUP";
+    public static final String GET="GET";
+    public static final String NUMBER_OF_LOOPS_AVAILABLE="NUMBER_OF_LOOPS_AVAILABLE";
+    public static final String SCORE="SCORE";
     public static final String LOGIN_FAILED="LOGIN_FAILED";
     public static final String AUTHENTICATED = "AUTHENTICATED";
     public static final String START="START";

@@ -5,10 +5,8 @@ import com.example.login.util.Duplexer;
 import com.example.login.util.Protocols;
 import java.io.*;
 import java.net.*;
-import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Random;
 
 import androidx.annotation.RequiresApi;
 
@@ -16,7 +14,6 @@ import androidx.annotation.RequiresApi;
  * @author : Sanchit Monga
  */
 public class server implements Protocols {
-
 
     private static HashMap<String,ClientHandler> clients;    // <Key:unique username, Value:Client>
     private static HashMap<String, String> credentials;      // <Key: username, Value:Password>

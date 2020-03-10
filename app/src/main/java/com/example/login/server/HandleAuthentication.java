@@ -31,6 +31,7 @@ public class HandleAuthentication implements Runnable, Protocols {
         this.emails=emails;
         this.game=game;
     }
+
     public HandleAuthentication(String username, String password, String emailAddress, Duplexer duplexer,HashMap<String, ClientHandler> clients,HashMap<String, String> credentials, HashSet<String> emails, Game game){
         this.username=username;
         this.password=password;
@@ -61,15 +62,14 @@ public class HandleAuthentication implements Runnable, Protocols {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private static void handleLogin(String username, String password, Duplexer duplexer) throws Exception {
-        //TODO check if the user is already online by using the game instance
-        if(false) {// user is active already
+        if(game.clientOnline(username)) {// user is active already
             duplexer.send(CONNECT+" FAILED "+"User already logged in!");
         }
         if(authenticate(password,credentials.get(username))){
             duplexer.send(CONNECT+" SUCCESSFUL");
             clients.get(username).login(duplexer,game);
             Thread t=clients.get(username);
-            // TODO update the game that a user has become active
+            game.addClient(username,clients.get(username));                 // adding the client in the update list
             t.start();
         }
         else{
@@ -91,7 +91,7 @@ public class HandleAuthentication implements Runnable, Protocols {
                 credentials.put(username,generatePassword(password));
             }
             clients.put(username,clientHandler);
-            // TODO update the list of the online players in the game
+            game.addClient(username,clientHandler);                       // A new client has been added to the game
             duplexer.send(SIGNUP+" SUCCESSFUL");
             Thread t= clientHandler;
             t.start();

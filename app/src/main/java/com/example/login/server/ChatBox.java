@@ -4,12 +4,13 @@ package com.example.login.server;
  * @author: Sanchit Monga
  */
 public class ChatBox {
-    private static String message; // contains all the messages with the name of the person who wrote them
-    private static String chat; // contains all the messages
-
+    private static String chat;                         // contains all the messages that are anonymous
+    private static String originalMessage;              // contains all the messages with their username
+    private static int i;
     public ChatBox(){
-        this.message="";
+        this.originalMessage="";
         this.chat="";
+        this.i=1;
     }
 
     /**
@@ -17,12 +18,17 @@ public class ChatBox {
      * @param username
      */
     public static void addChat(String m, String username){
-        message.concat("\n"+username+" "+m);
-        chat.concat("Anonymous: \n" +
+        originalMessage.concat(username+": \n"+m+"\n");
+        chat.concat("Anonymous "+i+": \n" +
                 m+"\n");
+        i++;
     }
 
     public String getMessage(){
         return chat;
+    }
+
+    public String getOriginalMessage(){
+        return originalMessage;
     }
 }

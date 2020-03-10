@@ -85,21 +85,11 @@ class ClientHandler extends Thread implements Protocols {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    public static void sendMessage(String message){
-        duplexer.send(message);
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    public static String getMessage(){
-        return duplexer.read();
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void checkUserOffline(){
         if(!duplexer.nextLine()){
             // removing the player since it is going offline
             System.out.println("disconnected");
-            this.game.clients.remove(userKey);
+            this.game.removeClient(userKey);
             interrupt();
         }
     }
@@ -108,32 +98,30 @@ class ClientHandler extends Thread implements Protocols {
     @Override
     public void run() {
         /**
-         * SEND
-         * RECEIVE
-         * LOOP_COMPLETE
-         * DISCONNECT
+         *
+         *
+         *
+         *
          */
         while (true){
             checkUserOffline();
+            String message=duplexer.read();
 
-            // checking if the player is already online and someone else is trying to login in with their name
-            //if(!checkUserOnlineAlready())
-            //    continue;
-
-            // reading the message from the Client
-            String message=getMessage();
             // initializing the messages for each new input read from the Client
             this.messages=new ArrayList<>();
             messages.addAll(Arrays.asList(message.split(" ")));
-
             switch (messages.get(0)) {
-
                 case SEND:
                     //SEND();
                 case START:
                     //START();
+                case GET:
+                    //GET();
             }
         }
+    }
+    public static void GET(){
+
     }
     //    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
 //    public static void START(){

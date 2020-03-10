@@ -7,20 +7,20 @@ import java.util.ArrayList;
  */
 public class Loop {
 
-    public static ArrayList<String> members;
+    private static ArrayList<String> members;        // UserNames of all the clients involved in the loop
     private static ChatBox chatBox;
-    private int id;
-    private int score;
+    private static int loopID;
     private static String creator;
-    private static String name;
+    private static String loopName;
+    private static boolean loopActive;
 
-    public Loop(int id, String creator, String name){
-        this.id=id;
-        this.score=0;
-        this.name=name;
+    public Loop(int loopID, String creator, String loopName){
+        this.loopID=loopID;
+        this.loopName=loopName;
         this.creator=creator;
         this.chatBox=new ChatBox();
-        members=new ArrayList<>();
+        this.members=new ArrayList<>();
+        this.loopActive=true;
     }
 
     public static void setCreator(String username){
@@ -28,7 +28,7 @@ public class Loop {
     }
 
     public static String getName(){
-        return name;
+        return loopName;
     }
 
     public static String getCreator(){
@@ -49,5 +49,15 @@ public class Loop {
 
     public static boolean userExists(String username){
         return members.contains(username);
+    }
+
+    public static int getLoopID(){
+        return loopID;
+    }
+    public static void setLoopActive(boolean isActive){
+        loopActive=isActive;
+    }
+    public static boolean isLoopActive(){
+        return loopActive;
     }
 }
