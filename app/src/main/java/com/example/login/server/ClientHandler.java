@@ -22,61 +22,63 @@ class ClientHandler extends Thread implements Protocols {
     private static int userKey;                         // unique identifier for the user
     private static Game game;                           // an instance of game to keep track of everything
     private static int numberOfLoops;                   // the number of loops that the person can start in a day
-    private int score;                                  // the actual score of the user that is updated everyTime there is a change
+    private static int score;                                  // the actual score of the user that is updated everyTime there is a change
 
 
     // List of all the contacts of the user even those who are not in snapLoop (email ids) (will be updated everyTime)
-    private ArrayList<String> allContacts;
+    private static ArrayList<String> allContacts;
 
     // The arrayList contains the unique userNames of all the clients
-    private ArrayList<String> friends;                  // List of people who are friends on snapLoop
-    private ArrayList<String> requestsReceived;         // List of people that have requested to follow
-    private ArrayList<String> requestsMade;             // List of people that you have requested to follow
+    private static ArrayList<String> friends;                  // List of people who are friends on snapLoop
+    private static ArrayList<String> requestsReceived;         // List of people that have requested to follow
+    private static ArrayList<String> requestsMade;             // List of people that you have requested to follow
 
     // These are the loops <Loop_ID, Loop>
-    private HashMap<Integer,Loop> activeLoops;          // The loops that the client is currently active in
-    private HashMap<Integer,Loop> completedLoops;       // The loops that the client has completed already
+    private static HashMap<Integer, Loop> activeLoops;          // The loops that the client is currently active in
+    private static HashMap<Integer, Loop> completedLoops;       // The loops that the client has completed already
 
     /**
      * Will be used by the user whenever a new user SIGNS_UP
+     *
      * @param duplexer The duplexer object that will be used for the communication
      * @param username The username of the new user
      * @param game     The instance of the game
      * @param emailID  The emailID of the user
      */
-    public ClientHandler(Duplexer duplexer, String username, Game game, String emailID){
-        this.duplexer=duplexer;
-        this.username=username;
-        this.game=game;
-        this.emailAddress=emailID;
-        this.messages= new ArrayList<>();
-        this.userKey=0;
-        this.numberOfLoops=5;
-        this.score=0;
-        this.allContacts=new ArrayList<>();
-        this.friends= new ArrayList<>();
-        this.requestsMade=new ArrayList<>();
-        this.requestsReceived= new ArrayList<>();
-        this.activeLoops= new HashMap<>();
-        this.completedLoops= new HashMap<>();
+    public ClientHandler(Duplexer duplexer, String username, Game game, String emailID) {
+        this.duplexer = duplexer;
+        this.username = username;
+        this.game = game;
+        this.emailAddress = emailID;
+        this.messages = new ArrayList<>();
+        this.userKey = 0;
+        this.numberOfLoops = 5;
+        this.score = 0;
+        this.allContacts = new ArrayList<>();
+        this.friends = new ArrayList<>();
+        this.requestsMade = new ArrayList<>();
+        this.requestsReceived = new ArrayList<>();
+        this.activeLoops = new HashMap<>();
+        this.completedLoops = new HashMap<>();
     }
 
     /**
      * everyTime the user logs in these are the only states that needs to be updated
+     *
      * @param duplexer The duplexer that establishes the communication
      * @param game     The most active instance of the game
      */
-    public void login(Duplexer duplexer, Game game){
-        this.duplexer=duplexer;
-        this.game=game;
+    public void login(Duplexer duplexer, Game game) {
+        this.duplexer = duplexer;
+        this.game = game;
     }
 
-    private static int generateLoopID(String username, String loopName){
-        return (username+loopName).hashCode();
+    private static int generateLoopID(String username, String loopName) {
+        return (username + loopName).hashCode();
     }
 
-    private static String extractMessage(int j){
-        String text="";
+    private static String extractMessage(int j) {
+        String text = "";
         for (int i = j; i < messages.size(); i++) {
             text = text + " " + messages.get(i);
         }
@@ -85,8 +87,8 @@ class ClientHandler extends Thread implements Protocols {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    public void checkUserOffline(){
-        if(!duplexer.nextLine()){
+    private void checkUserOffline() {
+        if (!duplexer.nextLine()) {
             // removing the player since it is going offline
             System.out.println("disconnected");
             this.game.removeClient(userKey);
@@ -103,26 +105,60 @@ class ClientHandler extends Thread implements Protocols {
          *
          *
          */
-        while (true){
+        while (true) {
             checkUserOffline();
-            String message=duplexer.read();
+            String message = duplexer.read();
 
             // initializing the messages for each new input read from the Client
-            this.messages=new ArrayList<>();
+            this.messages = new ArrayList<>();
             messages.addAll(Arrays.asList(message.split(" ")));
             switch (messages.get(0)) {
                 case SEND:
                     //SEND();
-                case START:
+                case UPDATE:
                     //START();
                 case GET:
-                    //GET();
+                    handleGET();
             }
         }
     }
-    public static void GET(){
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    private static void handleGET() {
+        switch (messages.get(1)) {
+            case NUMBER_OF_LOOPS_AVAILABLE:
+                duplexer.send(SEND + " " + NUMBER_OF_LOOPS_AVAILABLE + " " + numberOfLoops);
+                break;
+            case NUMBER_OF_REQUESTS:
+                duplexer.send(SEND + " " + NUMBER_OF_REQUESTS + " " + requestsReceived.size());
+                break;
+            case SCORE:
+                duplexer.send(SEND + " " + SCORE + " " + score);
+                break;
+            case LOOPS_COMPLETED:
+                duplexer.send(SEND + " " + LOOPS_COMPLETED + " " + completedLoops.size());
+                break;
+            case LOOP_DATA:
+                int loopID = Integer.parseInt(messages.get(2));
+                duplexer.send(SEND + " " + LOOP_DATA + " " + activeLoops.get(loopID).getChat());
+            case ACTIVE_LOOPS_INFO:
+                getActiveLoopsInfo();
+                break;
+        }
     }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    private static void getActiveLoopsInfo() {
+        String message=SEND+" "+ACTIVE_LOOPS_INFO+" ";
+        for(Loop loop:activeLoops.values()){
+            message+=loop.getName()+","+loop.getNumberOfPeople()+" ";
+        }
+        duplexer.send(message);
+    }
+
+
+
+}
     //    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
 //    public static void START(){
 //        // when the create loop button is clicked, then send a message to the server that the user
@@ -198,5 +234,3 @@ class ClientHandler extends Thread implements Protocols {
 //        sendMessage(LOGIN_FAILED);
 //        return false;
 //    }
-
-}

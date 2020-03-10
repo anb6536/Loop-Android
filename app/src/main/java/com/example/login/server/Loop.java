@@ -31,6 +31,9 @@ public class Loop {
         return loopName;
     }
 
+    public static int getNumberOfPeople(){
+        return members.size();
+    }
     public static String getCreator(){
         return creator;
     }

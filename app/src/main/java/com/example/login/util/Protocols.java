@@ -55,9 +55,9 @@ public interface Protocols {
      *
      *                      Current loops Data(if the user clicks on current loops:
      * Client to Server:
-     *      GET CURRENT_LOOPS
+     *      GET ACTIVE_LOOPS_INFO
      * Server to Client:
-     *      SEND CURRENT_LOOPS "LOOP_NAME,NUMBER_OF_PEOPLE(involved)".........(all the loops so there will be more)
+     *      SEND ACTIVE_LOOPS_INFO "LOOP_NAME,NUMBER_OF_PEOPLE(involved)".........(all the loops so there will be more)
      *      (will be separated by a ",", thus loop names cannot contain a comma
      *
      *                              getting Loop clicked(getting loop data)
@@ -71,7 +71,7 @@ public interface Protocols {
      * Client to Server:
      *      SEND "LOOP_NAME" "MESSAGE"
      * Server to Client:
-     *      START START_LOOP_APPROVED
+     *      SEND START_LOOP_APPROVED
      *      (which is unique)
      *      SEND LOOP_START_FAILED "error message"
      *      (if the loop was not started successfully due to whether the loop name needs to be changed)
@@ -91,7 +91,7 @@ public interface Protocols {
      * Server to Client:
      *      SEND LOOP_STARTED "LOOP_ID"
      *
-     *       TO the other client
+     *       To the other client
      *       RECEIVE "LOOP_NAME" "Message"
      *
      *
@@ -153,16 +153,20 @@ public interface Protocols {
     public static final String SIGNUP="SIGNUP";
     public static final String GET="GET";
     public static final String NUMBER_OF_LOOPS_AVAILABLE="NUMBER_OF_LOOPS_AVAILABLE";
+    public static final String NUMBER_OF_REQUESTS="NUMBER_OF_REQUESTS";
+    public static final String LOOPS_COMPLETED="LOOPS_COMPLETED";
+    public static final String ACTIVE_LOOPS_INFO="ACTIVE_LOOPS_INFO";
     public static final String SCORE="SCORE";
-    public static final String LOGIN_FAILED="LOGIN_FAILED";
-    public static final String AUTHENTICATED = "AUTHENTICATED";
+    public static final String LOOP_DATA="LOOP_DATA";
+    public static final String UPDATE="UPDATE";
+    public static final String SEND = "SEND";
+    public static final String RECEIVE = "RECEIVE";
+    public static final String LOOP_COMPLETE = "LOOP_COMPLETE";
+    public static final String LOOP_BROKEN="LOOP_BROKEN";
+
     public static final String START="START";
     public static final String LOOP_STARTED="LOOP_STARTED";
     public static final String LOOP_CREATION_FAILED="LOOP_CREATION_FAILED";
-    public static final String SEND = "SEND";
     public static final String CONTACTS="CONTACTS";
-    public static final String RECEIVE = "RECEIVE";
     public static final String MAX_LOOP="MAX_LOOP";
-    public static final String LOOP_COMPLETE = "LOOP_COMPLETE";
-    public static final String LOOP_BROKEN="LOOP_BROKEN";
 }

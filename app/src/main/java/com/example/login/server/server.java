@@ -5,8 +5,6 @@ import com.example.login.util.Duplexer;
 import com.example.login.util.Protocols;
 import java.io.*;
 import java.net.*;
-import java.util.HashMap;
-import java.util.HashSet;
 
 import androidx.annotation.RequiresApi;
 
@@ -15,16 +13,10 @@ import androidx.annotation.RequiresApi;
  */
 public class server implements Protocols {
 
-    private static HashMap<String,ClientHandler> clients;    // <Key:unique username, Value:Client>
-    private static HashMap<String, String> credentials;      // <Key: username, Value:Password>
-    private static HashSet<String> emails;                   // contains all the emails that already are registered within the system
     private static Game game;                                // instance of the game
 
     public server(){
-        this.clients=new HashMap<>(); // maintaining the list of all the clients
         this.game= new Game();
-        this.emails= new HashSet<>();
-        this.credentials= new HashMap<>();
     }
     /**
      *
@@ -36,7 +28,6 @@ public class server implements Protocols {
     {
         ServerSocket ss = new ServerSocket(5056);
         game.run();
-
         while (true)
         {
             System.out.println("Server is running");
@@ -54,10 +45,10 @@ public class server implements Protocols {
                 // Handles everything from here
                 HandleAuthentication handleAuthentication=null;
                 if(input[0].equals(CONNECT)){
-                    handleAuthentication= new HandleAuthentication(input[1],input[2],duplexer,clients,credentials,emails,game);
+                    handleAuthentication= new HandleAuthentication(input[1],input[2],duplexer,game);
                 }
                 else if(input[0].equals(SIGNUP)){
-                    handleAuthentication= new HandleAuthentication(input[1],input[2],input[3],duplexer,clients,credentials,emails,game);
+                    handleAuthentication= new HandleAuthentication(input[1],input[2],input[3],duplexer,game);
                 }
                 else {
                     System.out.println("Unauthorized user connected");

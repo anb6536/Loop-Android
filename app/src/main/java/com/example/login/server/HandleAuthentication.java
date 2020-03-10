@@ -9,39 +9,39 @@ import java.util.HashSet;
 
 public class HandleAuthentication implements Runnable, Protocols {
 
+    private static HashMap<String,ClientHandler> clients;    // <Key:unique username, Value:Client>
+    private static HashMap<String, String> credentials;      // <Key: username, Value:Password>
+    private static HashSet<String> emails;                   // contains all the emails that already are registered within the system
     private static String username;
     private static String password;
     private static String emailAddress;
     private static Duplexer duplexer;
-    private static HashMap<String,ClientHandler> clients;
     private static Boolean newUser;
     private static PasswordAuthentication pass;
-    private static HashMap<String, String> credentials;
-    private static HashSet<String> emails;
     private static Game game;
 
-    public HandleAuthentication(String username, String password, Duplexer duplexer, HashMap<String, ClientHandler> clients, HashMap<String, String> credentials, HashSet<String> emails, Game game){
+    public HandleAuthentication(String username, String password, Duplexer duplexer, Game game){
         this.username=username;
         this.password=password;
         this.duplexer=duplexer;
-        this.clients=clients;
+        this.clients=new HashMap<>();
         this.newUser= false;
         this.pass=new PasswordAuthentication();
-        this.credentials= credentials;
-        this.emails=emails;
+        this.credentials= new HashMap<>();
+        this.emails=new HashSet<>();
         this.game=game;
     }
 
-    public HandleAuthentication(String username, String password, String emailAddress, Duplexer duplexer,HashMap<String, ClientHandler> clients,HashMap<String, String> credentials, HashSet<String> emails, Game game){
+    public HandleAuthentication(String username, String password, String emailAddress, Duplexer duplexer,Game game){
         this.username=username;
         this.password=password;
         this.duplexer=duplexer;
-        this.clients=clients;
+        this.clients=new HashMap<>();
         this.emailAddress=emailAddress;
         this.newUser=true;
         this.pass=new PasswordAuthentication();
-        this.credentials= credentials;
-        this.emails=emails;
+        this.credentials= new HashMap<>();
+        this.emails=new HashSet<>();
         this.game=game;
     }
 
@@ -67,7 +67,7 @@ public class HandleAuthentication implements Runnable, Protocols {
         }
         if(authenticate(password,credentials.get(username))){
             duplexer.send(CONNECT+" SUCCESSFUL");
-            clients.get(username).login(duplexer,game);
+            clients.get(username).login(duplexer,game);                     // Updating the instance of the Duplexer and the game everyTime a user logs in
             Thread t=clients.get(username);
             game.addClient(username,clients.get(username));                 // adding the client in the update list
             t.start();
@@ -90,6 +90,7 @@ public class HandleAuthentication implements Runnable, Protocols {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 credentials.put(username,generatePassword(password));
             }
+            emails.add(emailAddress);                                     // Adding emailAddress of the new user
             clients.put(username,clientHandler);
             game.addClient(username,clientHandler);                       // A new client has been added to the game
             duplexer.send(SIGNUP+" SUCCESSFUL");
