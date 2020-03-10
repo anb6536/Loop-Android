@@ -7,6 +7,7 @@ import java.io.*;
 import java.net.*;
 import java.security.SecureRandom;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Random;
 
 import androidx.annotation.RequiresApi;
@@ -15,15 +16,18 @@ import androidx.annotation.RequiresApi;
  * @author : Sanchit Monga
  */
 public class server implements Protocols {
-    public static HashMap<String,ClientHandler> clients;
-    private static PasswordAuthentication pass;
-    private static final Random random= new SecureRandom();
-//    String getSaltedHash(String password)
-//    boolean checkPassword(String password, String stored)
+
+
+    private static HashMap<String,ClientHandler> clients;    // <Key:unique username, Value:Client>
+    private static HashMap<String, String> credentials;      // <Key: username, Value:Password>
+    private static HashSet<String> emails;                   // contains all the emails that already are registered within the system
+    private static Game game;                                // instance of the game
 
     public server(){
-        clients=new HashMap<>(); // maintaining the list of all the clients
-        pass=new PasswordAuthentication();
+        this.clients=new HashMap<>(); // maintaining the list of all the clients
+        this.game= new Game();
+        this.emails= new HashSet<>();
+        this.credentials= new HashMap<>();
     }
     /**
      *
@@ -33,12 +37,9 @@ public class server implements Protocols {
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public static void main(String[] args) throws IOException
     {
-        // server is listening on port 5056
         ServerSocket ss = new ServerSocket(5056);
-        // running infinite loop for getting
-        // client request
-        Game game=new Game();
         game.run();
+
         while (true)
         {
             System.out.println("Server is running");
@@ -48,46 +49,33 @@ public class server implements Protocols {
                 // socket object to receive incoming client requests
                 s = ss.accept();
                 System.out.println("A new client is connected : " + s);
+
                 Duplexer duplexer= new Duplexer(s);
                 String m=duplexer.read();
-
                 String[] input=m.split(" ");
-                String username;
 
+                // Handles everything from here
+                HandleAuthentication handleAuthentication=null;
                 if(input[0].equals(CONNECT)){
-                    System.out.println("user connected");
-                    username=input[1];
-                    System.out.println("Client connected: "+username);
+                    handleAuthentication= new HandleAuthentication(input[1],input[2],duplexer,clients,credentials,emails,game);
+                }
+                else if(input[0].equals(SIGNUP)){
+                    handleAuthentication= new HandleAuthentication(input[1],input[2],input[3],duplexer,clients,credentials,emails,game);
                 }
                 else {
-                    System.out.println("UnAuthorized user connected");
+                    System.out.println("Unauthorized user connected");
+                    s.close();
                     continue;
-                    // throw an error
                 }
-
-                //String key=generatePassword(username);
-                ClientHandler client = new ClientHandler(duplexer,username,game);
-
-                // When a NEW Client is connected
-//                if(!authenticate()){
-//                    clients.put(key,client);
-//                }
-                Thread t = client;
-                t.start();
+                if(handleAuthentication!=null){
+                    Thread t= new Thread(handleAuthentication);
+                    t.start();
+                }
             }
             catch (Exception e){
                 s.close();
                 e.printStackTrace();
             }
         }
-    }
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public static String generatePassword(String password) throws Exception {
-        return pass.getSaltedHash(password);
-    }
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public static boolean authenticate(String passwordEntered, String hashPassword) throws Exception {
-
-        return pass.check(passwordEntered,hashPassword);
     }
 }

@@ -44,15 +44,15 @@ public class Game implements Runnable, Protocols {
         int index=members.indexOf(receiverUsername);
         int loopCreatorKey=members.get(0).hashCode();
 
-        if(index!=0){
-            clients.get(loopCreatorKey).sendMessage(LOOP_COMPLETE);
-        }
-        for(int i=index;i<members.size();i++){
-           clients.get(members.get(i).hashCode()).sendMessage(LOOP_COMPLETE);
-        }
-        for (int j=1; j<index; j++){
-            clients.get(members.get(j).hashCode()).sendMessage(LOOP_BROKEN);
-        }
+//        if(index!=0){
+//            clients.get(loopCreatorKey).sendMessage(LOOP_COMPLETE);
+//        }
+//        for(int i=index;i<members.size();i++){
+//           clients.get(members.get(i).hashCode()).sendMessage(LOOP_COMPLETE);
+//        }
+//        for (int j=1; j<index; j++){
+//            clients.get(members.get(j).hashCode()).sendMessage(LOOP_BROKEN);
+//        }
     }
 
     @Override

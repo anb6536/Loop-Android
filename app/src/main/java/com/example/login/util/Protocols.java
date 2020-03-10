@@ -14,6 +14,91 @@ package com.example.login.util;
 public interface Protocols {
 
     /**
+     *                      Logging in Authentication:
+     *  Client to Server
+     *      CONNECT "USERNAME" "PASSWORD"
+     *  Server to Client
+     *      CONNECT FAILED "Error message(either user already online or incorrect credentials)"
+     *      CONNECT SUCCESSFUL
+     *
+     *                            Signing up
+     * Client to Server:
+     *      SIGNUP "USERNAME(no spaces in between)" "PASSWORD" "EmailAddress(should be unique)"
+     * Server to Client:
+     *      SIGNUP FAILED "Error message(username taken, or account with the emailID exists already, or user logged in already"
+     *      SIGNUP SUCCESSFUL
+     *
+     *                          Getting homepage data:
+     * Client to Server:
+     *      GET NUMBER_OF_LOOPS_AVAILABLE
+     * Server to Client
+     *      SEND NUMBER_OF_LOOPS_AVAILABLE "number of loops available for the day"
+     *      (if number of loops is 0 then create should be disabled in the UI)
+     *
+     * Client to Server:
+     *      GET SCORE
+     * Server to Client:
+     *      SEND SCORE "actual score of the player"
+     *
+     * Client to Server:
+     *      GET NUMBER_OF_REQUESTS
+     * Server to Client:
+     *      SEND NUMBER_OF_REQUESTS "number of requests"
+     *      (number of new requests that other users have sent)
+     *
+     * Client to Server:
+     *      GET LOOPS_COMPLETED
+     * Server to Client
+     *      SEND LOOPS_COMPLETED "number of loops that have been completed"
+     *      (this will be an alert slider for if there is a new loop has been completed)
+     *
+     *                      Current loops Data(if the user clicks on current loops:
+     * Client to Server:
+     *      GET CURRENT_LOOPS
+     * Server to Client:
+     *      SEND CURRENT_LOOPS "LOOP_NAME,NUMBER_OF_PEOPLE(involved)".........(all the loops so there will be more)
+     *      (will be separated by a ",", thus loop names cannot contain a comma
+     *
+     *                              getting Loop clicked(getting loop data)
+     * Client to Server:
+     *      GET LOOP_DATA "LOOP_ID"
+     * Server to Client:
+     *      SEND LOOP_DATA "MESSAGES"
+     *      MESSAGES contain the complete chat box
+     *
+     *                              When trying to create a new loop
+     * Client to Server:
+     *      SEND "LOOP_NAME" "MESSAGE"
+     * Server to Client:
+     *      START START_LOOP_APPROVED
+     *      (which is unique)
+     *      SEND LOOP_START_FAILED "error message"
+     *      (if the loop was not started successfully due to whether the loop name needs to be changed)
+     *
+     *      if the loop is approved
+     *      UPDATE CONTACTS "emailID of the friends"......
+     * (once the start of the loop is approved, UI needs to take it to the next step ie to the contacts
+     * window that contains details of all the contacts)
+     *
+     * Client to Server:
+     *      UPDATE CONTACTS
+     * Server to Client:
+     *      UPDATE CONTACTS "emailIDs"............
+     *
+     * Client to Server:
+     *      SEND MESSAGE "LOOP_NAME" "emailAddress of the person"
+     * Server to Client:
+     *      SEND LOOP_STARTED "LOOP_ID"
+     *
+     *       TO the other client
+     *       RECEIVE "LOOP_NAME" "Message"
+     *
+     *
+     *
+     */
+
+
+    /**
      * ....................CLIENT TO SERVER....................
      *
      * Used when a NEW USER is connected
@@ -64,6 +149,7 @@ public interface Protocols {
      */
 
     public static final String CONNECT = "CONNECT";
+    public static final String SIGNUP="SIGNUP";
     public static final String LOGIN_FAILED="LOGIN_FAILED";
     public static final String AUTHENTICATED = "AUTHENTICATED";
     public static final String START="START";
