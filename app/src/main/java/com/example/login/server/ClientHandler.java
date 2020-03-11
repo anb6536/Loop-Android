@@ -36,6 +36,7 @@ class ClientHandler extends Thread implements Protocols {
     // These are the loops <Loop_ID, Loop>
     private static HashMap<Integer, Loop> activeLoops;          // The loops that the client is currently active in
     private static HashMap<Integer, Loop> completedLoops;       // The loops that the client has completed already
+    private static HandleAuthentication handleAuthentication;   // To get the latest data of all the users involved from the server
 
     /**
      * Will be used by the user whenever a new user SIGNS_UP
@@ -45,11 +46,12 @@ class ClientHandler extends Thread implements Protocols {
      * @param game     The instance of the game
      * @param emailID  The emailID of the user
      */
-    public ClientHandler(Duplexer duplexer, String username, Game game, String emailID) {
+    public ClientHandler(Duplexer duplexer, String username, Game game, String emailID, HandleAuthentication handleAuthentication) {
         this.duplexer = duplexer;
         this.username = username;
         this.game = game;
         this.emailAddress = emailID;
+        this.handleAuthentication=handleAuthentication;
         this.messages = new ArrayList<>();
         this.userKey = 0;
         this.numberOfLoops = 5;
@@ -68,9 +70,10 @@ class ClientHandler extends Thread implements Protocols {
      * @param duplexer The duplexer that establishes the communication
      * @param game     The most active instance of the game
      */
-    public void login(Duplexer duplexer, Game game) {
+    public void login(Duplexer duplexer, Game game,HandleAuthentication handleAuthentication) {
         this.duplexer = duplexer;
         this.game = game;
+        this.handleAuthentication=handleAuthentication;
     }
 
     private static int generateLoopID(String username, String loopName) {
@@ -115,8 +118,6 @@ class ClientHandler extends Thread implements Protocols {
             switch (messages.get(0)) {
                 case SEND:
                     //SEND();
-                case UPDATE:
-                    //START();
                 case GET:
                     handleGET();
             }
@@ -144,7 +145,22 @@ class ClientHandler extends Thread implements Protocols {
             case ACTIVE_LOOPS_INFO:
                 getActiveLoopsInfo();
                 break;
+            case CONTACTS:
+                updateContacts();
+                break;
+
         }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    private static void updateContacts(){
+        String message=UPDATE+" "+CONTACTS+" ";
+        for(String email:allContacts){
+            if(handleAuthentication.userExists(email)){
+                message+=email+" ";
+            }
+        }
+        duplexer.send(message);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -155,9 +171,6 @@ class ClientHandler extends Thread implements Protocols {
         }
         duplexer.send(message);
     }
-
-
-
 }
     //    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
 //    public static void START(){

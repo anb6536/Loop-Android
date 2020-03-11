@@ -60,14 +60,18 @@ public class HandleAuthentication implements Runnable, Protocols {
         }
     }
 
+    public boolean userExists(String emailAddress){
+        return emails.contains(emailAddress);
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private static void handleLogin(String username, String password, Duplexer duplexer) throws Exception {
+    private void handleLogin(String username, String password, Duplexer duplexer) throws Exception {
         if(game.clientOnline(username)) {// user is active already
             duplexer.send(CONNECT+" FAILED "+"User already logged in!");
         }
         if(authenticate(password,credentials.get(username))){
             duplexer.send(CONNECT+" SUCCESSFUL");
-            clients.get(username).login(duplexer,game);                     // Updating the instance of the Duplexer and the game everyTime a user logs in
+            clients.get(username).login(duplexer,game,this);                     // Updating the instance of the Duplexer and the game everyTime a user logs in
             Thread t=clients.get(username);
             game.addClient(username,clients.get(username));                 // adding the client in the update list
             t.start();
@@ -78,7 +82,7 @@ public class HandleAuthentication implements Runnable, Protocols {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    private static void handleSignUp(String username, String password, String emailAddress, Duplexer duplexer) throws Exception {
+    private void handleSignUp(String username, String password, String emailAddress, Duplexer duplexer) throws Exception {
         if(clients.keySet().contains(username)){
             duplexer.send(SIGNUP+" FAILED "+"Username already taken");
         }
@@ -86,7 +90,7 @@ public class HandleAuthentication implements Runnable, Protocols {
             duplexer.send(SIGNUP+" FAILED "+"Email address already taken");
         }
         else {
-            ClientHandler clientHandler = new ClientHandler(duplexer, username, game, emailAddress);
+            ClientHandler clientHandler = new ClientHandler(duplexer, username, game, emailAddress,this);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 credentials.put(username,generatePassword(password));
             }
